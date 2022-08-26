@@ -1,4 +1,5 @@
 from socket import socket, AF_INET, SOCK_STREAM
+import scapy
 from pyfiglet import Figlet
 import subprocess
 import argparse
@@ -14,36 +15,42 @@ class PortScanner:
         self.banner_list = []
 
     def tryGetOS(self):
-        os = ""
+        linux_system_list = ["debian", "ubuntu", "linux"]
+        windows_system_list = ["microsft", "windows"]
+
         for banner in self.banner_list:
-            if "Debian" in banner or "Ubuntu" in banner or "Linux" in banner:
-                os = "Linux"
-            elif "Microsoft" in banner or "Windows" in banner:
-                os = "Windows"
-            else:
-                os = ""
-        return os
+            banner = str(banner).lower()
+            for os in linux_system_list:
+                if os in banner:
+                    return "Linux"
+            for os in windows_system_list:
+                if os in banner:
+                    return "Windows"
 
     def scanPort(self, port):
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(2)
         banner = ""
+
         try:
             s.connect((self.target, port))
-            if port != 80:
+            if port == 80 or port == 443:
+                banner = subprocess.check_output([f"curl -IL {self.target}"], shell=True, stderr=subprocess.DEVNULL).decode().rstrip()
+                self.banner_list.append(banner)
+            else:
                 try:
                     banner = s.recv(1024).decode().strip()
                     self.banner_list.append(banner)
                 except:
                     pass
-            else:
-                banner = subprocess.check_output([f"curl -IL {self.target}"], shell=True, stderr=subprocess.DEVNULL).decode().rstrip()
-                self.banner_list.append(banner)
+
             port = f"{port}/tcp".ljust(26)
             print(f"{port}open")
+
             if banner != "":
                 print(f"{banner}\n")
             s.close()
+
         except:
             pass
 
@@ -65,15 +72,15 @@ class PortScanner:
 
 def getArguments():
     parser = argparse.ArgumentParser(description="PYTHON PORT SCANNER - Script to scan for open ports on a host")
-    parser.add_argument("-t", "--target", action="store", help="The target host IPv4 address")
+    parser.add_argument("-t", "--target", action="store", help="The target host IPv4 address. If you don't provide a target, it will scan the localhost")
     parser.add_argument("-p", "--ports", action="store", help="The port or the port range that will be scanned (1-65535). If this field is not provided, the script will scan all 65535 ports")
     parser.add_argument("-m", "--mode", action="store", help="The pre configured scan mode that will be executed. Use 0 to scan only the privileged ports (1-1023), 1 to scan only the top 10 most common ports to be open, and 2 to scan only HTTP and HTTPS ports (80 and 443)")
     parser.add_argument("--timeout", action="store", help="The max timeout value for getting an response from each scanned port. Default value is 2")
     args = parser.parse_args()
 
     if not args.target:
-        print("ERROR - Please provide a target host IPv4 address")
-        quit()
+        print("No target host IPv4 address, scanning localhost")
+        args.target = "127.0.0.1"
 
     if not args.ports and not args.mode:
         args.ports = "1-65535"
@@ -112,4 +119,5 @@ if __name__ == "__main__":
     start = time.perf_counter()
     ps.scan()
     end = time.perf_counter()
+
     print(f"\nScanned {len(ps.ports)} ports on host {ps.target} in: {round(end - start, 2)}s")
