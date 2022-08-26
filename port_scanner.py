@@ -18,9 +18,6 @@ class PortScanner:
     def __init__(self, target):
         self.target = target
 
-    def tryGetBanner(self):
-        print()
-
     def scanPort(self, port):
         s = socket(AF_INET, SOCK_STREAM)
         s.settimeout(2)
@@ -28,19 +25,14 @@ class PortScanner:
             s.connect((self.target, port))
             print(f"{port}/tcp\topen")
             s.close()
-            return True
-        except Exception as e:
+        except:
             pass
 
     def scan(self):
-        open_ports = 0
         print(f"Scanning host {self.target}")
         print("PORT\tSTATUS")
         for port in range(1, 1024):
-            isOpen = self.scanPort(port)
-            if isOpen:
-                open_ports += 1
-        return open_ports
+            self.scanPort(port)
 
 
 if __name__ == "__main__":
@@ -51,7 +43,7 @@ if __name__ == "__main__":
         target="192.168.220.130"
     )
     start = time.perf_counter()
-    opn = ps.scan()
+    ps.scan()
     end = time.perf_counter()
     print(f"\nScanned 1024 ports in: {round(end - start, 2)}s")
-    print(f"There are {opn} open ports in host 192.168.220.130")
+    # CAPYBARA
