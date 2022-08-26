@@ -7,6 +7,9 @@
 # 192.168.220.130
 
 from socket import *
+from pyfiglet import Figlet
+import prettytable
+import subprocess
 import time
 import argparse
 
@@ -15,28 +18,40 @@ class PortScanner:
     def __init__(self, target):
         self.target = target
 
+    def tryGetBanner(self):
+        print()
+
     def scanPort(self, port):
-        socket_obj = socket(AF_INET, SOCK_STREAM)
-        socket_obj.settimeout(1)
-        result = socket_obj.connect_ex((self.target, port))
-        if (result == 0):
-            try:
-                banner = socket_obj.recv(1024).decode()
-                print(f"Port {port}")
-                print("Status: open")
-                print("Banner:")
-            except Exception as e:
-                print(e)
-                pass
-        socket_obj.close()
+        s = socket(AF_INET, SOCK_STREAM)
+        s.settimeout(2)
+        try:
+            s.connect((self.target, port))
+            print(f"{port}/tcp\topen")
+            s.close()
+            return True
+        except Exception as e:
+            pass
 
     def scan(self):
+        open_ports = 0
+        print(f"Scanning host {self.target}")
+        print("PORT\tSTATUS")
         for port in range(1, 1024):
-            self.scanPort(port)
+            isOpen = self.scanPort(port)
+            if isOpen:
+                open_ports += 1
+        return open_ports
 
 
 if __name__ == "__main__":
+    f = Figlet(font='slant')
+    print(f.renderText('Port Scanner'))
+
     ps = PortScanner(
         target="192.168.220.130"
     )
-    ps.scan()
+    start = time.perf_counter()
+    opn = ps.scan()
+    end = time.perf_counter()
+    print(f"\nScanned 1024 ports in: {round(end - start, 2)}s")
+    print(f"There are {opn} open ports in host 192.168.220.130")
