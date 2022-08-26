@@ -1,3 +1,17 @@
+#!/usr/bin/env python
+#
+# PYTHON PORT SCANNER
+#
+# Author: Matheus Heidemann
+#
+# Description: this is a simple Python Port Scanner that tries to detect open ports from a host in the same network, the banners from each open port and the current OS that the host is running.
+#
+# 26 August 2022
+#
+# Version: 1.0.0
+#
+# License: MIT License
+
 from socket import socket, AF_INET, SOCK_STREAM
 from pyfiglet import Figlet
 import subprocess
@@ -55,7 +69,7 @@ class PortScanner:
 
     def scan(self):
         print(f"Scanning host {self.target}\n")
-        print(f"PORTAS LOKOS".ljust(26) + "STATUS")
+        print(f"PORT".ljust(26) + "STATUS")
 
         if (isinstance(args.ports, str)):
             initial_port = int(self.ports.split("-")[0])
