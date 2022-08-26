@@ -1,5 +1,4 @@
 from socket import socket, AF_INET, SOCK_STREAM
-import scapy
 from pyfiglet import Figlet
 import subprocess
 import argparse
@@ -16,7 +15,7 @@ class PortScanner:
 
     def tryGetOS(self):
         linux_system_list = ["debian", "ubuntu", "linux"]
-        windows_system_list = ["microsft", "windows"]
+        windows_system_list = ["microsoft", "windows"]
 
         for banner in self.banner_list:
             banner = str(banner).lower()
@@ -29,7 +28,7 @@ class PortScanner:
 
     def scanPort(self, port):
         s = socket(AF_INET, SOCK_STREAM)
-        s.settimeout(2)
+        s.settimeout(self.timeout)
         banner = ""
 
         try:
@@ -56,7 +55,7 @@ class PortScanner:
 
     def scan(self):
         print(f"Scanning host {self.target}\n")
-        print(f"PORT".ljust(26) + "STATUS")
+        print(f"PORTAS LOKOS".ljust(26) + "STATUS")
 
         if (isinstance(args.ports, str)):
             initial_port = int(self.ports.split("-")[0])

@@ -1,41 +1,45 @@
-# TODO
-# Printar as portas abertas por padrão
-# Opção para printar portas fechadas
-# Pegar os banners
-# Usar regex para detectar o OS através dos banners
-# Opções de scan personalizadas (portas 1-1024, 1-65565, as 10 mais comuns)
-# 192.168.220.130
+class Cachorro:
+    def __init__(self, raca, sexo, cor, idade, altura_do_latido):
+        self.raca = raca
+        self.sexo = sexo
+        self.cor = cor
+        self.idade = idade
+        self.altura_do_latido = altura_do_latido
+        self.quantidade_de_patas = 4
+        self.olhos = 2
 
-from socket import *
-import subprocess
-import time
-import argparse
+    def latir(self):
+        print(f"O {self.raca} deu um latido {self.altura_do_latido}")
 
+    def informacoes(self):
+        #self.olhos = self.perderUmOlho(self.olhos)
 
-class PortScanner:
-    def __init__(self, target):
-        self.target = target
+        print(f"Raça: {self.raca}")
+        print(f"Sexo: {self.sexo}")
+        print(f"Cor: {self.cor}")
+        print(f"Idade: {self.idade}")
+        print(f"Patas: {self.quantidade_de_patas}")
+        print(f"Olhos: {self.olhos}")
 
-    def tryGetBanner(self):
-        print()
-
-    def scanPort(self, port):
-        s = socket(AF_INET, SOCK_STREAM)
-        s.settimeout(2)
-        try:
-            s.connect((self.target, port))
-            print(f"Open port {port}")
-            s.close()
-        except Exception as e:
-            pass
-
-    def scan(self):
-        for port in range(1, 1024):
-            self.scanPort(port)
+    def perderUmOlho(self, olhos):
+        return olhos - 1
 
 
 if __name__ == "__main__":
-    ps = PortScanner(
-        target="192.168.220.130"
+    raca = "poodle"
+    poodle = Cachorro(
+        raca=raca,
+        sexo="Masculino",
+        cor="Branco",
+        idade=2,
+        altura_do_latido="Médio",
     )
-    ps.scan()
+    salsicha = Cachorro(
+        raca=raca,
+        sexo="Masculino",
+        cor="Marrom",
+        idade=5,
+        altura_do_latido="Alto",
+    )
+
+    salsicha.informacoes()
