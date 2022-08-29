@@ -4,6 +4,9 @@
 
 This is a simple Python Port Scanner that tries to detect open ports from a host in the same network, the banners from each open port and the current OS that the host is running.
 
+[![Travis branch](https://img.shields.io/cran/l/devtools.svg)](https://github.com/its0v3r/Python-Port-Scanner/blob/main/LICENSE)
+[![Travis branch](https://img.shields.io/badge/made%20with-%3C3-red.svg)](https://github.com/its0v3r/Python-Port-Scanner)
+
 ## How to use the script?
 
 - First, to scan a target, the user needs to pass a valid IPv4 with the -t --target option;
